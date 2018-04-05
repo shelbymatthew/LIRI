@@ -15,34 +15,92 @@ switch (ui1) {
     case 'my-tweets':
     client.get('statuses/home_timeline', function(error, tweets, response) {
         if(error) throw error;
-        // console.log(tweets);  // The favorites. 
-        // console.log(response);  // Raw response object. 
-        var jTweets =JSON.stringify(tweets, null, 2)
-        // console.log(JSON.parse(jTweets).text)
+        for (var i = 0; i < 20; i++){
+            // jTweets[i].text;
+            console.log(tweets[i].text);
+            console.log(tweets[i].created_at);
+        }
       });
     break;
+
+
     case "spotify-this-song":
-    spotify.search({ type: 'track', query: ui2 }, function(err, data) {
+    spotify.search({ type: 'track', query: ui2, limit: 1 }, function(err, data) {
         if (err) {
           return console.log('Error occurred: ' + err);
         }
-        var jSpot =JSON.stringify(data, null, 2)
-        //  JSON.parse(jSpot).text   
-      console.log(JSON.parse(jSpot).text);
+        console.log("-------------------");
+        console.log("Artist: " + data.tracks.items[0].artists[0].name);
+        console.log("Song title: " + data.tracks.items[0].name);
+        console.log("Preview link:")
+        console.log(data.tracks.items[0].external_urls);
+        console.log("Album: " + data.tracks.items[0].album.name);
+        console.log("-------------------");
+    //     var jSpot =JSON.stringify(data, null, 2)
+    //     //  JSON.parse(jSpot).text   
+    //   console.log((JSON.parse(jSpot).tracks));
     });
+
+
     break;
     case "movie-this":
     var request = require("request");
 
-// Then run a request to the OMDB API with the movie specified
-request("http://www.omdbapi.com/?t=" + ui2 +"&y=&plot=short&apikey=570679e2", function(error, response, body) {
+        // Then run a request to the OMDB API with the movie specified
+        request("http://www.omdbapi.com/?t=" + ui2 +"&y=&plot=short&apikey=570679e2", function(error, response, body) {
 
-  // If the request is successful (i.e. if the response status code is 200)
-  if (!error && response.statusCode === 200) {
+        // If the request is successful (i.e. if the response status code is 200)
+        if (!error && response.statusCode === 200 && ui2 != undefined) {
+            console.log("-------------------")
+            console.log("Title: " + JSON.parse(body).Title);
+            console.log("Release date: " + JSON.parse(body).Released);
+            console.log("IMDB rating: " + JSON.parse(body).Ratings[1].Value);
+            console.log("Rotton Tomatoes rating: " + JSON.parse(body).Ratings[2].Value);
+            console.log("Country produced in: " + JSON.parse(body).Country);
+            console.log("Plot: " + JSON.parse(body).Plot);
+            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("-------------------");
+            
+        }else{
+            var request = require("request");
 
-    // Parse the body of the site and recover just the imdbRating
-    // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
-    console.log("The movie's rating is: " + JSON.parse(body).imdbRating);
-  }
-});
+        // Then run a request to the OMDB API with the movie specified
+        request("http://www.omdbapi.com/?t=mr%20nobody&y=&plot=short&apikey=570679e2", function(error, response, body) {
+            console.log("-------------------")
+            console.log("Title: " + JSON.parse(body).Title);
+            console.log("Release date: " + JSON.parse(body).Released);
+            console.log("IMDB rating: " + JSON.parse(body).Ratings[1].Value);
+            console.log("Rotton Tomatoes rating: " + JSON.parse(body).Ratings[2].Value);
+            console.log("Country produced in: " + JSON.parse(body).Country);
+            console.log("Plot: " + JSON.parse(body).Plot);
+            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("-------------------");
+            });
+        }
+        });
+    break;
+    case "do-what-it-says":
+    var fs = require("fs");
+    fs.readFile("random.txt", "utf8", function(error, data) {
+      if (error) {
+        return console.log(error);
+      }
+      var dataArr = data.split(",");
+      spotify.search({ type: 'track', query: dataArr[1] }, function(err, data) {
+        if (err) {
+          return console.log('Error occurred: ' + err);
+        }
+        var jSpot =JSON.stringify(data, null, 2)
+        console.log("-------------------");
+        console.log("Artist: " + data.tracks.items[0].artists[0].name);
+        console.log("Song title: " + data.tracks.items[0].name);
+        console.log("Preview link:")
+        console.log(data.tracks.items[0].external_urls);
+        console.log("Album: " + data.tracks.items[0].album.name);
+        console.log("-------------------");
+      });
+    
+    });
+    
 }
+
