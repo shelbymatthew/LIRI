@@ -85,6 +85,12 @@ switch (ui1) {
             console.log("Album: " + data.tracks.items[0].album.name);
             console.log("-------------------");
         });  
-    });  
+    }); 
+    break;
+    default:
+    console.log("-------------------");
+    console.log(
+        "Please enter one of these commands:\nmy-tweets\nspotify-this-song '<song title>\nmovie-this '<movie title>'\ndo-what-it-says");
+    console.log("-------------------");
 }
 
